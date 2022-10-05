@@ -23,10 +23,11 @@ const TimelineRender = () => {
 
   useEffect(() => {
     let clickPosition = document.querySelectorAll(".contentScene");
-    function getPositionClick(e, i) {
+    function getPositionClick(e) {
       const duration = Number(e.target.dataset.duration);
       const id = e.target.dataset.id;
-      let width = e.target.clientWidth;
+      let width = e.target.clientWidth + 2;
+      let index = e.target.dataset.index;
       //console.log("layer", e.layerX);
       /*   console.log("layer", e.layerX);
       console.log("offset", e.offsetX);
@@ -36,44 +37,34 @@ const TimelineRender = () => {
 
       console.log("currentTime: " + currentTime);
 
-      console.log(e.layerX);
+      setMarkerPosition(e.layerX + width * index);
 
       let selectedScene = scene.scenes.find((s) => s.id == id);
       setScene((prevState) => ({
         ...prevState,
         currentScene: { ...selectedScene, currentTime },
       }));
-
-      setMarkerPosition(e.layerX + width * i);
-      console.log(i);
     }
     clickPosition.forEach(function (element, i) {
-      element.addEventListener("mouseup", (e) => getPositionClick(e, i));
+      element.addEventListener("mouseup", getPositionClick);
       return () => element.removeEventListener("mouseup", getPositionClick);
     });
   }, [scene.scenes.length]);
 
-  useEffect(() => {
-    let scenContent = sceneParentRef.current;
-
-    function setPosition(e) {
-      setMarkerPosition(e.layerX);
-    }
-  }, []);
-
   return (
     <Container>
       {/* <VideoEditingTimeline config={config} /> */}
-      <ContentSceneVideo ref={sceneParentRef}>
+      <ContentSceneVideo>
         <TimelineMarker position={markerPosition} />
         {scene.scenes.length > 0 &&
-          scene.scenes.map((s) => (
+          scene.scenes.map((s, i) => (
             <SceneItemVideo
               key={s.id}
               className="contentScene"
               ref={elementRef}
               data-duration={s.duration}
               data-id={s.id}
+              data-index={i}
             ></SceneItemVideo>
           ))}
         <SceneItemVideo>ajouter</SceneItemVideo>

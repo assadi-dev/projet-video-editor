@@ -49,7 +49,7 @@ export const TimeLineMarkerContainer = styled.div`
   top: 0;
   width: 2px;
   padding-left: 10px;
-  transition: all 0.45s;
+  transition: all 0.25s;
 `;
 
 export const TimeLineMarkerHeader = styled.div`

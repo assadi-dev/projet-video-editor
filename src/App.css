@@ -1,0 +1,27 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+#root {
+    width: 100%;
+    margin: 0 auto;
+    padding: 22px;
+}
+
+.headerRow {
+    padding: 12px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 25px;
+}
+
+wrapperMedia {
+    max-width: 1280px;
+}
+
+.workzone {
+    padding-top: 25px;
+}

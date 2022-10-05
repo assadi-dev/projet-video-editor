@@ -26,7 +26,7 @@ const TimelineRender = () => {
     function getPositionClick(e) {
       const duration = Number(e.target.dataset.duration);
       const id = e.target.dataset.id;
-      let width = e.target.clientWidth + 2;
+      let width = e.target.clientWidth;
       let index = e.target.dataset.index;
       //console.log("layer", e.layerX);
       /*   console.log("layer", e.layerX);

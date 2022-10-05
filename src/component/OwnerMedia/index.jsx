@@ -53,11 +53,13 @@ const OwnerMedia = () => {
         ];
         let totalDuration = initScene.map((s) => s.duration);
         let sumDuration = totalDuration.reduce((a, b) => a + b);
-        let upDate = initScene.map((s) => {
-          return { ...s, maxDuration: sumDuration };
-        });
 
-        setScene({ ...scene, scenes: [...upDate] });
+        setScene({
+          ...scene,
+          scenes: [...initScene],
+          currentScene: initScene[0],
+          maxDuration: sumDuration,
+        });
       };
     });
   }, []);

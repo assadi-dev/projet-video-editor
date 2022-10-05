@@ -32,6 +32,7 @@ export const SceneItemVideo = styled.div`
   place-items: center;
   position: relative;
   user-select: none;
+  cursor: pointer;
 `;
 
 //Marker

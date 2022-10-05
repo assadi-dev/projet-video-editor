@@ -7,6 +7,8 @@ export const Container = styled.div`
   overflow-x: auto;
   border-top: 1px solid #dadada;
   background-color: #dadada;
+  position: relative;
+  overflow-y: hidden;
   .contentScene {
     border: 1px solid blue;
     width: 245px;
@@ -35,5 +37,32 @@ export const SceneItemVideo = styled.div`
 //Marker
 
 export const TimeLineMarkerContainer = styled.div`
-  background: black;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: absolute;
+  z-index: 180;
+  left: ${(props) => (props.position ? props.position : 0)}px;
+  top: 0;
+  width: 2px;
+  padding-left: 10px;
+  transition: all 0.45s;
+`;
+
+export const TimeLineMarkerHeader = styled.div`
+  display: inline-block;
+  height: 0;
+  width: 0;
+  border-top: 15px solid #444;
+  border-right: 15px solid transparent;
+  border-left: 15px solid transparent;
+  border-radius: 15px;
+  transform: translateY(8px);
+`;
+export const TimeLineMarkerLine = styled.div`
+  width: 2px;
+  height: 250px;
+  background: #444; ;
 `;

@@ -47,8 +47,12 @@ const TimelineRender = () => {
     }
     clickPosition.forEach(function (element, i) {
       element.addEventListener("mouseup", getPositionClick);
-      return () => element.removeEventListener("mouseup", getPositionClick);
     });
+    return () => {
+      clickPosition.forEach(function (element, i) {
+        element.removeEventListener("mouseup", getPositionClick);
+      });
+    };
   }, [scene.scenes.length]);
 
   return (

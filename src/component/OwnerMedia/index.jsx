@@ -26,42 +26,49 @@ const OwnerMedia = () => {
   const [isLoading, setIstLoading] = useState(true);
 
   useEffect(() => {
-    // const VideoNodes = videoRef.current.querySelectorAll("video");
+    const VideoNodes = videoRef.current.querySelectorAll("video");
 
     let initScene = [];
 
-    media.map((element, i) => {
-      let video = document.createElement("video");
-      video.src = element;
-      video.preload = "metadata";
-      video.onloadedmetadata = (event) => {
-        const target = event.target;
-        const duration = target.duration;
-        const path = target.attributes.src.textContent;
+    function loadedmetadata(event, i) {
+      const target = event.target;
+      const duration = target.duration;
+      const path = target.attributes.src.textContent;
 
-        initScene = [
-          ...initScene,
-          {
-            id: uuid(),
-            name: "video-" + i,
-            start: 0,
-            duration,
-            path: path,
-            end: duration,
-            currentTime: 0,
-          },
-        ];
-        let totalDuration = initScene.map((s) => s.duration);
-        let sumDuration = totalDuration.reduce((a, b) => a + b);
+      initScene = [
+        ...initScene,
+        {
+          id: uuid(),
+          name: "video-" + i,
+          start: 0,
+          duration,
+          path: path,
+          end: duration,
+          currentTime: 0,
+        },
+      ];
+      let totalDuration = initScene.map((s) => s.duration);
+      let sumDuration = totalDuration.reduce((a, b) => a + b);
 
-        setScene({
-          ...scene,
-          scenes: [...initScene],
-          currentScene: initScene[0],
-          maxDuration: sumDuration,
-        });
-      };
+      setScene({
+        ...scene,
+        scenes: initScene,
+        currentScene: initScene[0],
+        maxDuration: sumDuration,
+      });
+    }
+
+    VideoNodes.forEach((video, i) => {
+      video.addEventListener("loadedmetadata", (e) => loadedmetadata(e, i));
     });
+
+    return () => {
+      VideoNodes.forEach((video, i) => {
+        video.removeEventListener("loadedmetadata", (e) =>
+          loadedmetadata(e, i)
+        );
+      });
+    };
   }, []);
 
   return (

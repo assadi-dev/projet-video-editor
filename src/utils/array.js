@@ -6,7 +6,7 @@
  * @returns
  * Ajouter une valeur a un position specifique
  */
-export const addToObject = function (array, value, index) {
+export const addToArrayPosition = function (array, value, index) {
   let arrayLeftPos = array.split.slice(0, index + 1);
   let arrayRightPos = array.split.slice(index + 1);
   arrayLeftPos.push(value);

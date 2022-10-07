@@ -7,8 +7,8 @@
  * Ajouter une valeur a un position specifique
  */
 export const addToArrayPosition = function (array, value, index) {
-  let arrayLeftPos = array.split.slice(0, index + 1);
-  let arrayRightPos = array.split.slice(index + 1);
+  let arrayLeftPos = array.slice(0, index + 1);
+  let arrayRightPos = array.slice(index + 1);
   arrayLeftPos.push(value);
   let finalArray = arrayLeftPos.concat(arrayRightPos);
   return finalArray;

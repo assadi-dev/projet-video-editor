@@ -120,12 +120,13 @@ const TimelineRender = () => {
     splitPart.id = uuid();
     splitPart.currentTime = currentSplit.currentTime;
     splitPart.start = scene.currentScene.currentTime;
-    splitPart.end = selectedScene.duration;
+    splitPart.end = +elapseTimeSplit + scene.currentScene.currentTime;
     splitPart.duration = elapseTimeSplit;
     splitPart.width = width - mousePos;
 
     console.log(splitPart);
     currentSplit.width = mousePos;
+
     currentSplit.end = scene.currentScene.currentTime;
     currentSplit.duration = currentSplit.duration - elapseTimeSplit;
 

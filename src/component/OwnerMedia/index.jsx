@@ -51,7 +51,7 @@ const OwnerMedia = () => {
               duration,
               end: duration,
               currentTime: 0,
-              width: 245,
+              width: duration * 20,
             },
           ],
         },

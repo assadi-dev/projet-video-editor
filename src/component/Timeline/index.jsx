@@ -1,16 +1,26 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
+  AddItemVideo,
   Container,
   ContentSceneVideo,
   SceneItemVideo,
+  TimeLineBtn,
+  TimeLineRowBtn,
 } from "./Timeline.styled";
 import VideoEditingTimeline from "video-editing-timeline-react";
 import ScenContext from "../../context/sceneContext";
 import TimelineMarker from "./TimelineMarker";
+import { SplitIcone } from "../Icone/Timeline.icone";
+import uuid from "react-uuid";
 
 const TimelineRender = () => {
   const { scene, setScene } = useContext(ScenContext);
   const [markerPosition, setMarkerPosition] = useState(0);
+  const [currentElement, setCurrentElement] = useState({
+    id: "",
+    width: 0,
+    mousePos: 0,
+  });
 
   const config = {
     canvasWidth: 2000,
@@ -25,24 +35,50 @@ const TimelineRender = () => {
     let clickPosition = document.querySelectorAll(".contentScene");
     function getPositionClick(e) {
       const duration = Number(e.target.dataset.duration);
-      const id = e.target.dataset.id;
+      const id = e.target.dataset.splitId;
+      const sceneId = e.target.dataset.sceneId;
       let width = e.target.clientWidth;
       let index = e.target.dataset.index;
-      //console.log("layer", e.layerX);
+      console.log("layer", e.layerX);
       /*   console.log("layer", e.layerX);
-      console.log("offset", e.offsetX);
-      console.log("width", e.target.clientWidth); */
+      console.log("offset", e.offsetX);*/
+      console.log("width", width);
+
+      let allWidthContent = [];
+
+      for (let count = 0; count < clickPosition.length; count++) {
+        if (index != count) {
+          allWidthContent.push(e.target.clientWidth);
+        }
+      }
+      let sumWidth = allWidthContent.reduce((a, b) => a + b);
+
+      console.log("allWidth:" + sumWidth);
+
+      //setMarkerPosition(e.layerX);
 
       let currentTime = (e.layerX / width) * duration;
 
       console.log("currentTime: " + currentTime);
 
-      setMarkerPosition(e.layerX + width * index);
+      setCurrentElement({ id, width, mousePos: e.layerX });
 
-      let selectedScene = scene.scenes.find((s) => s.id == id);
+      let selectedScene = scene.scenes.find((s) => s.id == sceneId);
+      let currentSplit = selectedScene.split.find((s) => s.id == id);
+
+      /**Mise à jours des element sur la collection des split */
+      let updateScenes = scene.scenes.map((s) => {
+        if (s.id == sceneId) {
+          let currentSplit = s.split.find((s) => s.id == id);
+          currentSplit.currentTime = currentTime;
+        }
+        return s;
+      });
+      // console.log("scene", updateScenes);
       setScene((prevState) => ({
         ...prevState,
-        currentScene: { ...selectedScene, currentTime },
+        scenes: updateScenes,
+        currentScene: { ...currentSplit, currentTime },
       }));
     }
     clickPosition.forEach(function (element, i) {
@@ -53,27 +89,120 @@ const TimelineRender = () => {
         element.removeEventListener("mouseup", getPositionClick);
       });
     };
-  }, [scene.scenes.length]);
+  }, [scene.scenes]);
+
+  const creatSplitElement = () => {};
+
+  const splitScene = () => {
+    const currentScene = sceneParentRef.current.querySelector(
+      `div[data-id="${scene.currentScene.id}"]`
+    );
+
+    const { width, mousePos } = currentElement;
+    console.log("Mouse", mousePos);
+    console.log(width - mousePos);
+    // currentScene.style.width = mousePos + "px";
+    // creatSplitElement(width - mousePos);
+
+    let splitPart = [];
+
+    let selectedScene = scene.scenes.find(
+      (s) => s.id == scene.currentScene.sceneId
+    );
+    let currentSplit = selectedScene.split.find(
+      (s) => s.id == scene.currentScene.id
+    );
+
+    let elapseTimeSplit =
+      scene.currentScene.duration - scene.currentScene.currentTime;
+
+    splitPart = { ...currentSplit };
+    splitPart.id = uuid();
+    splitPart.currentTime = currentSplit.currentTime;
+    splitPart.start = scene.currentScene.currentTime;
+    splitPart.end = selectedScene.duration;
+    splitPart.duration = elapseTimeSplit;
+    splitPart.width = width - mousePos;
+
+    console.log(splitPart);
+    currentSplit.width = mousePos;
+    currentSplit.end = scene.currentScene.currentTime;
+    currentSplit.duration = currentSplit.duration - elapseTimeSplit;
+
+    console.log(currentSplit);
+
+    let splitIndex = selectedScene.split.findIndex(
+      (split) => split.id == scene.currentScene.id
+    );
+
+    let updateSplitLeftPos = selectedScene.split.slice(0, splitIndex + 1);
+    let updateSplitRightPos = selectedScene.split.slice(splitIndex + 1);
+
+    console.log((updateSplitLeftPos = [...updateSplitLeftPos, splitPart]));
+
+    console.log(updateSplitRightPos);
+
+    let upDateScenes = scene.scenes.map((s) => {
+      if (s.id == scene.currentScene.sceneId) {
+        return { ...s, split: updateSplitLeftPos.concat(updateSplitRightPos) };
+      }
+      return s;
+    });
+
+    setScene((prevState) => ({
+      ...prevState,
+      scenes: upDateScenes,
+      currentScene: { ...splitPart },
+    }));
+  };
+
+  /**
+   * Recuper et concate le moceaux des videos contenant dans les scenes
+   */
+  const joinSplit = useMemo(() => {
+    let listSplits = [];
+    let splits = [];
+    if (scene.scenes) {
+      splits = scene.scenes.map((s) => {
+        s.split.map((s) => listSplits.push(s));
+        return s.split;
+      });
+    }
+
+    return listSplits;
+  }, [scene.scenes, scene.currentScene]);
 
   return (
-    <Container>
-      {/* <VideoEditingTimeline config={config} /> */}
-      <ContentSceneVideo>
+    <>
+      <TimeLineRowBtn>
+        <TimeLineBtn title="Fractionner" onClick={splitScene}>
+          <SplitIcone />
+        </TimeLineBtn>
+      </TimeLineRowBtn>
+
+      <Container>
+        {/* <VideoEditingTimeline config={config} /> */}
         <TimelineMarker position={markerPosition} />
-        {scene.scenes.length > 0 &&
-          scene.scenes.map((s, i) => (
-            <SceneItemVideo
-              key={s.id}
-              className="contentScene"
-              ref={elementRef}
-              data-duration={s.duration}
-              data-id={s.id}
-              data-index={i}
-            ></SceneItemVideo>
-          ))}
-        <SceneItemVideo>ajouter</SceneItemVideo>
-      </ContentSceneVideo>
-    </Container>
+        <ContentSceneVideo ref={sceneParentRef}>
+          {scene.scenes.length > 0 &&
+            joinSplit.map((s, i) => (
+              <SceneItemVideo
+                key={s.id}
+                className={`contentScene ${
+                  s.id == scene.currentScene.id ? "activeContentScene" : ""
+                }`}
+                ref={elementRef}
+                data-duration={s.duration}
+                data-split-id={s.id}
+                data-scene-id={s.sceneId}
+                data-index={i}
+                itemWidth={s.width}
+              ></SceneItemVideo>
+            ))}
+          <AddItemVideo>ajouter</AddItemVideo>
+        </ContentSceneVideo>
+      </Container>
+    </>
   );
 };
 

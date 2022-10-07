@@ -9,11 +9,8 @@ export const Container = styled.div`
   background-color: #dadada;
   position: relative;
   overflow-y: hidden;
-  .contentScene {
+  .activeContentScene {
     border: 1px solid blue;
-    width: 245px;
-    height: 100px;
-    margin-right: 0.1rem;
   }
 `;
 
@@ -25,6 +22,18 @@ export const ContentSceneVideo = styled.div`
 `;
 
 export const SceneItemVideo = styled.div`
+  width: ${(props) => props.itemWidth}px;
+  height: 100px;
+  background-color: #fff;
+  display: grid;
+  place-items: center;
+  position: relative;
+  user-select: none;
+  cursor: pointer;
+  margin-right: 0.1rem;
+`;
+
+export const AddItemVideo = styled.div`
   min-width: 145px;
   height: 80px;
   background-color: #fff;
@@ -65,5 +74,30 @@ export const TimeLineMarkerHeader = styled.div`
 export const TimeLineMarkerLine = styled.div`
   width: 2px;
   height: 250px;
-  background: #444; ;
+  background: #444;
+`;
+
+export const TimeLineRowBtn = styled.div`
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+`;
+
+export const TimeLineBtn = styled.span`
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  :hover {
+    svg {
+      opacity: 0.5;
+    }
+  }
+
+  :active {
+    transform: scale(0.9);
+  }
+  & svg {
+    width: 25px;
+    height: 25px;
+  }
 `;

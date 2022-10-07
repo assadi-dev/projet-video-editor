@@ -11,7 +11,7 @@ const PreviewVideo = () => {
       {scene.currentScene && (
         <div>
           <ListContainer>
-            <ListItem key={scene.currentScene.id}>
+            <ListItem>
               <ul>
                 <li>
                   <ListTitleItem>ID: </ListTitleItem> {scene.currentScene.id}

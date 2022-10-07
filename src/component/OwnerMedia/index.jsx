@@ -34,28 +34,37 @@ const OwnerMedia = () => {
       const target = event.target;
       const duration = target.duration;
       const path = target.attributes.src.textContent;
-
+      const sceneId = uuid();
       initScene = [
         ...initScene,
         {
-          id: uuid(),
-          name: "video-" + i,
-          start: 0,
-          duration,
-          path: path,
-          end: duration,
-          currentTime: 0,
+          id: sceneId,
+          name: "scene" + i,
+          duration: duration,
+          path,
+          split: [
+            {
+              id: uuid(),
+              sceneId,
+              name: "video-" + i,
+              start: 0,
+              duration,
+              end: duration,
+              currentTime: 0,
+              width: 245,
+            },
+          ],
         },
       ];
       let totalDuration = initScene.map((s) => s.duration);
       let sumDuration = totalDuration.reduce((a, b) => a + b);
 
-      setScene({
-        ...scene,
+      setScene((prevState) => ({
+        ...prevState,
         scenes: initScene,
-        currentScene: initScene[0],
+        currentScene: initScene.at(0).split.at(0),
         maxDuration: sumDuration,
-      });
+      }));
     }
 
     VideoNodes.forEach((video, i) => {

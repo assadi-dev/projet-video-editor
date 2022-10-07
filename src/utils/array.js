@@ -1,29 +1,15 @@
 /**
  *
- * @param {Object} obj Le tableau d'origine
- * @param {String} key clé
+ * @param {Array} array tableau d'origine
  * @param {Any} value valeur
  * @param {Number} index  l'index
  * @returns
- * Ajouter une valeur au position specifique
+ * Ajouter une valeur a un position specifique
  */
-export const addToObject = function (obj, key, value, index) {
-  var temp = {};
-  var i = 0;
-
-  for (var prop in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, prop)) {
-      if (i === index && key && value) {
-        temp[key] = value;
-      }
-
-      temp[prop] = obj[prop];
-      i++;
-    }
-  }
-  if (!index && key) {
-    temp[key] = value;
-  }
-
-  return temp;
+export const addToObject = function (array, value, index) {
+  let arrayLeftPos = array.split.slice(0, index + 1);
+  let arrayRightPos = array.split.slice(index + 1);
+  arrayLeftPos.push(value);
+  let finalArray = arrayLeftPos.concat(arrayRightPos);
+  return finalArray;
 };

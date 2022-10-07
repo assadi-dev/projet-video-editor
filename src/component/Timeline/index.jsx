@@ -12,6 +12,7 @@ import ScenContext from "../../context/sceneContext";
 import TimelineMarker from "./TimelineMarker";
 import { SplitIcone } from "../Icone/Timeline.icone";
 import uuid from "react-uuid";
+import { addToArrayPosition } from "../../utils/array";
 
 const TimelineRender = () => {
   const { scene, setScene } = useContext(ScenContext);
@@ -136,16 +137,15 @@ const TimelineRender = () => {
       (split) => split.id == scene.currentScene.id
     );
 
-    let updateSplitLeftPos = selectedScene.split.slice(0, splitIndex + 1);
-    let updateSplitRightPos = selectedScene.split.slice(splitIndex + 1);
-
-    console.log((updateSplitLeftPos = [...updateSplitLeftPos, splitPart]));
-
-    console.log(updateSplitRightPos);
+    let updateSplitScenes = addToArrayPosition(
+      selectedScene.split,
+      splitPart,
+      splitIndex
+    );
 
     let upDateScenes = scene.scenes.map((s) => {
       if (s.id == scene.currentScene.sceneId) {
-        return { ...s, split: updateSplitLeftPos.concat(updateSplitRightPos) };
+        return { ...s, split: updateSplitScenes };
       }
       return s;
     });
